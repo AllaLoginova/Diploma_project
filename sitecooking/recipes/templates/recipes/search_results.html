@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Результаты поиска для "{{ query }}"</h2>
+    <ul class="list-articles">
+        {% for recipe in results %}
+            <li>
+                <div class="article-panel">
+                    <p class="first">Категория: {{ recipe.cat.name }} | автор: {{ recipe.author.username|default:"неизвестен" }}</p>
+                    <p class="last">Дата: {{ recipe.time_update|date:"d-m-Y H:i:s" }}</p>
+                </div>
+
+                {% if recipe.photo %}
+                    <p><img class="img-article-left thumb" src="{{ recipe.photo.url }}" alt="{{ recipe.title }}"></p>
+                {% endif %}
+
+                <h2>{{ recipe.title }}</h2>
+                {% autoescape off %}
+                    {{ recipe.content|truncatewords:40 }}
+                {% endautoescape %}
+                <div class="clear"></div>
+                <p class="link-read-post"><a href="{{ recipe.get_absolute_url }}">Читать рецепт</a></p>
+            </li>
+        {% empty %}
+            <li>Ничего не найдено.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

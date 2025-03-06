@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block breadcrumbs %}
+
+{% with post.tags.all as tags %}
+{% if tags %}
+<ul class="tags-list">
+    <li>Теги:</li>
+    {% for t in tags %}
+    <li><a href="{{ t.get_absolute_url }}">{{ t.tag }}</a></li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+{% endblock %}
+
+
+{% block content %}
+<h1>{{ post.title }}</h1>
+
+{% if post.photo %}
+<p><img class="img-article-left" src="{{ post.photo.url }}"></p>
+{% endif %}
+
+{{ post.content|linebreaks }}
+
+{% if request.user.pk == post.author.pk  %}
+<p><a href="{% url 'edit_page' post.id %}"><button>Редактировать рецепт</button></a></p>
+<p><a href="{% url 'delete_page' post.id %}"><button>Удалить рецепт</button></a></p>
+{% endif %}
+
+{% endblock %}
