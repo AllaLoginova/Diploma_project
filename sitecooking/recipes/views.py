@@ -25,13 +25,9 @@ class RecipesHome(DataMixin, ListView):
     cat_selected = 0
 
     def get_queryset(self):
-        # Базовый запрос
         queryset = Recipes.published.all().select_related('cat')
-
-        # Получаем параметры из GET-запроса
         order = self.request.GET.get('order')
 
-        # Фильтрация и сортировка
         if order == 'with_photo':
             queryset = queryset.filter(~Q(photo=''))  # Посты с фото
         elif order == 'without_photo':
@@ -44,7 +40,6 @@ class RecipesHome(DataMixin, ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
-        # Добавляем форму в контекст
         context = super().get_context_data(**kwargs)
         context['show_filter_form'] = True
         context['filter_form'] = PostFilterForm(self.request.GET)
@@ -55,7 +50,6 @@ def search(request):
     query = request.GET.get('q')  # Получаем поисковый запрос
     title = query.capitalize()
     if query:
-        # Ищем рецепты
         results = Recipes.objects.filter(Q(title__icontains=title))
     else:
         results = Recipes.objects.none()  # Если запрос пустой, возвращаем пустой результат
@@ -103,7 +97,6 @@ class AddPage(LoginRequiredMixin, CreateView):
         w.author = self.request.user
         w.save()
 
-        # Добавляем сообщение об успешном добавлении
         messages.success(self.request, 'Рецепт был успешно добавлен!')
 
         # Если это AJAX-запрос, возвращаем JSON
